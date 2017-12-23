@@ -26,6 +26,10 @@ var inferRepositoryTests = []struct {
 }{{
 	url: "cs:trusty/django",
 }, {
+	url: "git:https://github.com/juju/jujushell-charm.git",
+}, {
+	url: "git:git@github.com:juju/jujushell-charm.git",
+}, {
 	url: "local:precise/wordpress",
 	err: "path to local repository not specified",
 }, {
@@ -48,6 +52,8 @@ func (s *inferRepoSuite) TestInferRepository(c *gc.C) {
 		switch store := repo.(type) {
 		case *charmrepo.LocalRepository:
 			c.Assert(store.Path, gc.Equals, test.localRepoPath)
+		case *charmrepo.GitRepository:
+			c.Assert(store.URL(), gc.Equals, gitrepo.RemoteURI)
 		case *charmrepo.CharmStore:
 			c.Assert(store.URL(), gc.Equals, csclient.ServerURL)
 		default:

@@ -35,11 +35,14 @@ type Interface interface {
 // InferRepository returns a charm repository inferred from the provided charm
 // or bundle reference.
 // Charm store references will use the provided parameters.
+// Git repositories will use the provided remote URI
 // Local references will use the provided path.
 func InferRepository(ref *charm.URL, charmStoreParams NewCharmStoreParams, localRepoPath string) (Interface, error) {
 	switch ref.Schema {
 	case "cs":
 		return NewCharmStore(charmStoreParams), nil
+	case "git":
+		return NewGitRepo(ref)
 	case "local":
 		return NewLocalRepository(localRepoPath)
 	}
